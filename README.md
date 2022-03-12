@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+# Exemplo de React em hospedagem windows
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este exemplo tem como objectivo demonstrar uma aplicação de exemplo com multi páginas, simulando as rotas.
 
-## Available Scripts
+## Primeiros passos
 
-In the project directory, you can run:
+Esta aplicação é bem simples, então não será necessário muita coisa :)
 
-### `npm start`
+### Pré-requisitos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+NodeJS
+GIT
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Instalação
+Instalando o NPM
 
-### `npm test`
+    npm install
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Gerando os arquivos para fazer o deploy
 
-### `npm run build`
+    npm run build
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Você irá notar que tem uma pasta nova a "build", são esses arquivos de dentro da pasta build que devemos enviar para o BateAqui Host
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Configurando a Hospedagem
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Para finalizar a configuração, precisamos alterar o arquivo web.config que está presente somente em hospedagens windows.
+Aqui vai um exemplo de web.config para você copiar e colar.
 
-### `npm run eject`
+### Rewrite
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Um dos pontos que causa problema é nas rotas, para isso precisamos incluir no web.config essas linhas aqui:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="React Routes" stopProcessing="true">
+                    <match url=".*" />
+                    <conditions logicalGrouping="MatchAll">
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                        <add input="{REQUEST_URI}" pattern="^/(api)" negate="true" />
+                    </conditions>
+                    <action type="Rewrite" url="/" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Web.config completo
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    ﻿<?xml version="1.0" encoding="UTF-8"?>
+    <configuration>
+    <system.webServer>
+        <httpErrors>
+            <remove statusCode="400" />
+            <error statusCode="400" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIAr\error_docs\bad_request.html" />
+            <remove statusCode="401" />
+            <error statusCode="401" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\unauthorized.html" />
+            <remove statusCode="403" />
+            <error statusCode="403" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\forbidden.html" />
+            <remove statusCode="404" />
+            <error statusCode="404" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\not_found.html" />
+            <remove statusCode="405" />
+            <error statusCode="405" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\method_not_allowed.html" />
+            <remove statusCode="406" />
+            <error statusCode="406" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\not_acceptable.html" />
+            <remove statusCode="407" />
+            <error statusCode="407" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\proxy_authentication_required.html" />
+            <remove statusCode="412" />
+            <error statusCode="412" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\precondition_failed.html" />
+            <remove statusCode="414" />
+            <error statusCode="414" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\request-uri_too_long.html" />
+            <remove statusCode="415" />
+            <error statusCode="415" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\unsupported_media_type.html" />
+            <remove statusCode="500" />
+            <error statusCode="500" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\internal_server_error.html" />
+            <remove statusCode="501" />
+            <error statusCode="501" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\not_implemented.html" />
+            <remove statusCode="502" />
+            <error statusCode="502" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\bad_gateway.html" />
+            <remove statusCode="503" />
+            <error statusCode="503" path="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\error_docs\maintenance.html" />
+        </httpErrors>
+        <rewrite>
+            <rules>
+                <rule name="React Routes" stopProcessing="true">
+                    <match url=".*" />
+                    <conditions logicalGrouping="MatchAll">
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                        <add input="{REQUEST_URI}" pattern="^/(api)" negate="true" />
+                    </conditions>
+                    <action type="Rewrite" url="/" />
+                </rule>
+            </rules>
+        </rewrite>
+        <tracing>
+            <traceFailedRequests>
+                <clear />
+            </traceFailedRequests>
+        </tracing>
+    </system.webServer>
+    <system.web>
+        <compilation tempDirectory="C:\Inetpub\vhosts\COLOQUE_AQUI_A_SUA_URL_TEMPORARIA\tmp" />
+    </system.web>
+    </configuration>
 
-## Learn More
+## Observação
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Lembre de alterar todos os "COLOQUE_AQUI_A_SUA_URL_TEMPORARIA" para sua url temporária que está disponível no painel do BateAqui, menu minhas assinaturas.
