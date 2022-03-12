@@ -1,4 +1,4 @@
-# Exemplo de React em hospedagem windows
+# Exemplo de React em Hospedagem Windows
 
 Este exemplo tem como objectivo demonstrar uma aplicação de exemplo com multi páginas, simulando as rotas.
 
